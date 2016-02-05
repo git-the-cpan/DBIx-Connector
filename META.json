@@ -39,40 +39,43 @@
    "provides" : {
       "DBIx::Connector" : {
          "file" : "lib/DBIx/Connector.pm",
-         "version" : "0.54"
+         "version" : "0.55"
       },
       "DBIx::Connector::Driver" : {
          "file" : "lib/DBIx/Connector/Driver.pm",
-         "version" : "0.54"
+         "version" : "0.55"
       },
       "DBIx::Connector::Driver::MSSQL" : {
          "file" : "lib/DBIx/Connector/Driver/MSSQL.pm",
-         "version" : "0.54"
+         "version" : "0.55"
       },
       "DBIx::Connector::Driver::Oracle" : {
          "file" : "lib/DBIx/Connector/Driver/Oracle.pm",
-         "version" : "0.54"
+         "version" : "0.55"
       },
       "DBIx::Connector::Driver::Pg" : {
          "file" : "lib/DBIx/Connector/Driver/Pg.pm",
-         "version" : "0.54"
+         "version" : "0.55"
       },
       "DBIx::Connector::Driver::SQLite" : {
          "file" : "lib/DBIx/Connector/Driver/SQLite.pm",
-         "version" : "0.54"
+         "version" : "0.55"
       },
       "DBIx::Connector::Driver::mysql" : {
          "file" : "lib/DBIx/Connector/Driver/mysql.pm",
-         "version" : "0.54"
+         "version" : "0.55"
       },
       "DBIx::Connector::RollbackError" : {
-         "file" : "lib/DBIx/Connector/Driver.pm"
+         "file" : "lib/DBIx/Connector/Driver.pm",
+         "version" : "0.55"
       },
       "DBIx::Connector::SvpRollbackError" : {
-         "file" : "lib/DBIx/Connector/Driver.pm"
+         "file" : "lib/DBIx/Connector/Driver.pm",
+         "version" : "0.55"
       },
       "DBIx::Connector::TxnRollbackError" : {
-         "file" : "lib/DBIx/Connector/Driver.pm"
+         "file" : "lib/DBIx/Connector/Driver.pm",
+         "version" : "0.55"
       }
    },
    "release_status" : "stable",
@@ -88,5 +91,5 @@
          "url" : "https://github.com/theory/dbix-connector"
       }
    },
-   "version" : "0.54"
+   "version" : "0.55"
 }
