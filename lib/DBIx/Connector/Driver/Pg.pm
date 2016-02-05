@@ -3,7 +3,7 @@ package DBIx::Connector::Driver::Pg;
 use strict;
 use warnings;
 use base 'DBIx::Connector::Driver';
-our $VERSION = '0.53';
+our $VERSION = '0.54';
 
 sub savepoint {
     my ($self, $dbh, $name) = @_;
@@ -40,6 +40,10 @@ PostgreSQL-specific implementations of the following methods:
 
 =item C<rollback_to>
 
+B<NOTE:> Due to L<a bug|https://rt.cpan.org/Ticket/Display.html?id=100648> in
+the implementation of DBD::Pg's C<ping> method, DBD::Pg 3.5.0 or later is
+strongly recommended.
+
 =back
 
 =head1 Authors
@@ -64,7 +68,7 @@ It is based on code written by:
 
 =head1 Copyright and License
 
-Copyright (c) 2009-2010 David E. Wheeler. Some Rights Reserved.
+Copyright (c) 2009-2013 David E. Wheeler. Some Rights Reserved.
 
 This module is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.

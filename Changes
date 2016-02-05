@@ -1,5 +1,25 @@
 Revision history for Perl extension DBIx::Connector.
 
+0.54  2016-02-05T18:52:44Z
+      - Removeed the Pod tests from the distribution.
+      - Fixed the example code for handling `rollback_error` exceptions in the
+        documentation to properly wrap the transaction in an exception
+        handler. Patch from Perlover (issue #32).
+      - Improved handling of connection failures when RaiseError (or
+        HandleError) is not set. Thanks to Andreas Huber for the report and
+        fix.
+      - Document that `$_` is set locally, not globally, in the methods that
+        set it. Suggested by William Lindley.
+      - The disconnect method no longer longer remove entries from the DBI
+        handle's CachedKids attribute. That behavior appears to be a
+        workaround for a database we don't (yet) support.
+      - Fixed a test failure where the test system has the `$DBI_DSN` or
+        `$DBI_DRIVER` environment variable set. Thanks to Erik Rijkers for the
+        patch.
+      - Added recommendation to use DBD::Pg 3.5.0 or later to the Pg driver.
+        Earlier versions had an incorrect implementation of the `ping()`
+        method (Issue #41).
+
 0.53  2013-03-20T06:04:34Z
       - Fixed some documentation typos, thanks to Mike O'Regan (Issue #22).
       - Fixed issue where an connection failure caused an unhelpful error

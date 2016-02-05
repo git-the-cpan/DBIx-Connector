@@ -6,7 +6,7 @@ use warnings;
 use DBI '1.605';
 use DBIx::Connector::Driver;
 
-our $VERSION = '0.53';
+our $VERSION = '0.54';
 
 sub new {
     my $class = shift;
@@ -24,14 +24,14 @@ sub DESTROY { $_[0]->disconnect if $_[0]->{_dond} }
 sub _connect {
     my $self = shift;
     my @args = $self->{_args}->();
-    my $dbh = $self->{_dbh} = do {
+    my $dbh = do {
         if ($INC{'Apache/DBI.pm'} && $ENV{MOD_PERL}) {
             local $DBI::connect_via = 'connect'; # Disable Apache::DBI.
             DBI->connect( @args );
         } else {
             DBI->connect( @args );
         }
-    } or return;
+    } or return undef;
 
     # Modify default values.
     $dbh->STORE(AutoInactiveDestroy => 1) if DBI->VERSION > 1.613 && (
@@ -45,6 +45,7 @@ sub _connect {
     # Where are we?
     $self->{_pid} = $$;
     $self->{_tid} = threads->tid if $INC{'threads.pm'};
+    $self->{_dbh} = $dbh;
 
     # Set up the driver and go!
     return $self->driver->_connect($dbh, @args);
@@ -132,8 +133,11 @@ sub disconnect {
     my $self = shift;
     if (my $dbh = $self->{_dbh}) {
         # Some databases need this to stop spewing warnings, according to
-        # DBIx::Class::Storage::DBI.
-        $dbh->STORE(CachedKids => {});
+        # DBIx::Class::Storage::DBI. Probably Sybase, as the code was added
+        # when Sybase ASA and SQLAnywhere support were added to DBIx::Class.
+        # If that ever becomes an issue for us, add a _disconnect to the
+        # Driver class that does it, don't do it here.
+        # $dbh->STORE(CachedKids => {});
         $dbh->disconnect;
         $self->{_dbh} = undef;
     }
@@ -307,7 +311,7 @@ sub svp {
 
 sub _exec {
     my ($dbh, $code, $wantarray) = @_;
-    local $_ = $dbh;
+    local $_ = $dbh or return;
     # Block prevents exiting via next or last, otherwise no commit/rollback.
     NOEXIT: {
         return $wantarray ? $code->($dbh) : scalar $code->($dbh)
@@ -542,22 +546,22 @@ The rollback error.
 For example:
 
   use Try::Tiny;
-  $conn->txn(sub {
-      try {
+  try {
+      $conn->txn(sub {
           # ...
-      } catch {
-          if (eval { $_->isa('DBIx::Connector::RollbackError') }) {
-              say STDERR 'Transaction aborted: ', $_->error;
-              say STDERR 'Rollback failed too: ', $_->rollback_error;
-          } else {
-              warn "Caught exception: $_";
-          }
-      };
-  });
+      });
+  } catch {
+      if (eval { $_->isa('DBIx::Connector::RollbackError') }) {
+          say STDERR 'Transaction aborted: ', $_->error;
+          say STDERR 'Rollback failed too: ', $_->rollback_error;
+      } else {
+          warn "Caught exception: $_";
+      }
+  };
 
 If a L<C<svp()>|/"svp"> rollback fails and its surrounding L<C<txn()>|/"txn">
 rollback I<also> fails, the thrown DBIx::Connetor::TxnRollbackError exception
-object will have the the savepoint rollback exception, which will be an
+object will have the savepoint rollback exception, which will be an
 DBIx::Connetor::SvpRollbackError exception object in its C<error> attribute:
 
   use Try::Tiny;
@@ -688,9 +692,10 @@ blocks.
 
   $conn->run(ping => sub { $_->do($query) });
 
-Simply executes the block, setting C<$_> to and passing in the database
-handle. Returns the value returned by the block in scalar or array context as
-appropriate (and the block can use C<wantarray> to decide what to do).
+Simply executes the block, locally setting C<$_> to and passing in the
+database handle. Returns the value returned by the block in scalar or array
+context as appropriate (and the block can use C<wantarray> to decide what to
+do).
 
 An optional first argument sets the connection mode, overriding that set in
 the C<mode()> accessor, and may be one of C<ping>, C<fixup>, or C<no_ping>
@@ -731,8 +736,8 @@ when called from inside a C<run()>, C<txn()> or C<svp()> block.
 
   my $sth = $conn->txn(fixup => sub { $_->do($query) });
 
-Starts a transaction, executes the block, setting C<$_> to and passing in the
-database handle, and commits the transaction. If the block throws an
+Starts a transaction, executes the block, locally setting C<$_> to and passing
+in the database handle, and commits the transaction. If the block throws an
 exception, the transaction will be rolled back and the exception re-thrown.
 Returns the value returned by the block in scalar or array context as
 appropriate (and the block can use C<wantarray> to decide what to do).
@@ -1010,7 +1015,7 @@ It is based on documentation, ideas, kibbitzing, and code from:
 
 =head1 Copyright and License
 
-Copyright (c) 2009-2010 David E. Wheeler. Some Rights Reserved.
+Copyright (c) 2009-2013 David E. Wheeler. Some Rights Reserved.
 
 This module is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.

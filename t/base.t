@@ -10,6 +10,8 @@ my $CLASS;
 BEGIN {
     $CLASS = 'DBIx::Connector';
     use_ok $CLASS or die;
+    $ENV{ DBI_DSN } = undef;
+    $ENV{ DBI_DRIVER } = undef;
 }
 
 # Try the basics.

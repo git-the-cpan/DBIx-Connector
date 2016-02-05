@@ -3,7 +3,7 @@ package DBIx::Connector::Driver::SQLite;
 use strict;
 use warnings;
 use base 'DBIx::Connector::Driver';
-our $VERSION = '0.53';
+our $VERSION = '0.54';
 
 sub _connect {
     my ($self, $dbh, $dsn, $username, $password, $attrs) = @_;
@@ -69,7 +69,7 @@ This module was written and is maintained by:
 
 =head1 Copyright and License
 
-Copyright (c) 2009-2010 David E. Wheeler. Some Rights Reserved.
+Copyright (c) 2009-2013 David E. Wheeler. Some Rights Reserved.
 
 This module is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.

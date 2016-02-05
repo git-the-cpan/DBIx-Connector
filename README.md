@@ -1,4 +1,4 @@
-DBIx/Connection version 0.53
+DBIx/Connection version 0.54
 ============================
 
 DBIx::Connector provides a simple interface for fast and safe DBI connection
@@ -52,7 +52,10 @@ your database supports them. Within a transaction, you can scope savepoints to
 behave like subtransactions, so that you can save some of your work in a
 transaction even if some of it fails.
 
-INSTALLATION
+Installation
+------------
+
+[![Build Status](https://travis-ci.org/theory/dbix-connector.png)](https://travis-ci.org/theory/dbix-connector)
 
 To install this module, type the following:
 
@@ -69,7 +72,7 @@ DBIx::Connection requires DBI 1.605 or higher.
 Copyright and License
 ---------------------
 
-Copyright (c) 2009-2010 David E. Wheeler. Some Rights Reserved.
+Copyright (c) 2009-2013 David E. Wheeler. Some Rights Reserved.
 
 This module is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
